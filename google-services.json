@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "361941532076",
+    "firebase_url": "https://expense-backend-34fb3-default-rtdb.firebaseio.com",
+    "project_id": "expense-backend-34fb3",
+    "storage_bucket": "expense-backend-34fb3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361941532076:android:4d7e54a301afded822ce09",
+        "android_client_info": {
+          "package_name": "com.ali.reactnativeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChErXAUwHq6VLr4pvmNEEQa2bSkhQt-bw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
