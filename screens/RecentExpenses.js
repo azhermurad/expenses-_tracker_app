@@ -1,17 +1,17 @@
 import ExpensesOutput from '../components/expenses/ExpensesOutput';
-import { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ExpenseContext } from '../store/context/store';
-const RecentExpenses = () => {
+import { useFocusEffect } from '@react-navigation/native';
+const RecentExpenses = ({ navigation }) => {
     const { expenses } = useContext(ExpenseContext);
     const currentDate = new Date();
     const previousDays = new Date();
     previousDays.setDate(currentDate.getDate() - 7);
 
-    const data = expenses.filter(
-        (expense) =>
-            expense.createdAt > previousDays && expense.createdAt <= currentDate
-    );
-    console.log(data);
+    const data = expenses.filter((expense) => {
+        const createdAt = new Date(expense.createdAt);
+        return createdAt > previousDays && createdAt <= currentDate;
+    });
 
     return <ExpensesOutput expenses={data} title='Previous 7 Days' />;
 };

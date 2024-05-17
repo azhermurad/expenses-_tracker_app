@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import DATA from '../../dummy_data/data';
 import ExpenseSummary from './ExpensesSummary';
 import ExpenseList from './ExpenseList';
@@ -18,7 +18,13 @@ const ExpensesOutput = ({ expenses, title }) => {
                     <ExpenseSummary title={title} expenses={expenses} />
                 </View>
                 {/* list of all the items from the database  */}
-                <ExpenseList expenses={expenses} />
+                {expenses.length == 0 ? (
+                    <Text style={{ color: 'white', fontSize: 20 }}>
+                        No Expenses Found!!!
+                    </Text>
+                ) : (
+                    <ExpenseList expenses={expenses} />
+                )}
             </View>
         </>
     );

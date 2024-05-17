@@ -3,17 +3,20 @@ import DATA from '../../dummy_data/data';
 
 export const ExpenseContext = createContext({
     expenses: [],
-    expenseHandler: ({ amount, title, createdAt }) => {},
+    expenseHandler: ({ amount, title, createdAt, id }) => {},
     deleteExpense: (id) => {},
     updateExpense: (id, { amount, title, createdAt }) => {},
+    setExpense: (expene) => {},
 });
 
 function reducer(state, { payload, type }) {
-
     switch (type) {
+        case 'SET_EXPENSE': {
+            return payload;
+        }
         case 'ADD': {
-            const data = { ...payload, id: `e$${state.length + 1}` };
-            return [...state, data];
+            const data = { ...payload };
+            return [data, ...state];
         }
         case 'UPDATE': {
             const data = [...state].map((expense) => {
@@ -36,7 +39,7 @@ function reducer(state, { payload, type }) {
 }
 
 const ExpenseProvider = ({ children }) => {
-    const [state, dispatch] = useReducer(reducer, [...DATA]);
+    const [state, dispatch] = useReducer(reducer, []);
 
     function expenseHandler(expense) {
         dispatch({ type: 'ADD', payload: expense });
@@ -47,6 +50,9 @@ const ExpenseProvider = ({ children }) => {
     function updateExpense(id, expense) {
         dispatch({ type: 'UPDATE', payload: { id: id, expense: expense } });
     }
+    function setExpense(expense) {
+        dispatch({ type: 'SET_EXPENSE', payload: expense });
+    }
 
     return (
         <ExpenseContext.Provider
@@ -55,6 +61,7 @@ const ExpenseProvider = ({ children }) => {
                 expenseHandler,
                 deleteExpense,
                 updateExpense,
+                setExpense,
             }}
         >
             {children}

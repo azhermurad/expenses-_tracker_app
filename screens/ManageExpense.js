@@ -1,17 +1,16 @@
-import { useContext, useLayoutEffect } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import PressableIcon from '../components/UI/PressableIcon';
 import { GlobalColors } from '../constants/colors';
 import { ExpenseContext } from '../store/context/store';
 import ManageExpenseForm from '../components/manageExpense/ManageExpenseForm';
-import { CreateExpense } from '../util/https/expenses';
 import database from '@react-native-firebase/database';
+import Loader from '../components/UI/Loader';
 
 const ManageExpense = ({ navigation, route }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const expenseCtx = useContext(ExpenseContext);
     const id = route.params?.expenseId;
-
-    console.log(database())
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -21,26 +20,48 @@ const ManageExpense = ({ navigation, route }) => {
 
     const ExpenseHandler = (expense) => {
         // create new
-      
+
         if (!!id) {
-            expenseCtx.updateExpense(id, expense);
-            navigation.goBack();
+            setIsLoading(true);
+            database()
+                .ref('/expenses/' + id)
+                .update(expense)
+                .then(() => {
+                    setIsLoading(false);
+                    expenseCtx.updateExpense(id, expense);
+                    navigation.goBack();
+                });
+
             return;
         }
 
-        CreateExpense()
-        expenseCtx.expenseHandler(expense);
+        // we have to create in the database
+        const expenseRef = database().ref('/expenses').push();
+        expenseRef
+            .set({ ...expense, createdAt: expense.createdAt.toString() })
+            .then((a) => {
+                expenseCtx.expenseHandler({ ...expense, id: expenseRef.key });
+            })
+            .catch((e) => {
+                console.log(e);
+            });
         navigation.goBack();
     };
-    const deleteExpenseHandler = () => {
+    const deleteExpenseHandler = async () => {
+        await database()
+            .ref('/expenses/' + id)
+            .remove();
         expenseCtx.deleteExpense(id);
         navigation.goBack();
     };
-    
+
     const CancelExpenseHandler = () => {
         navigation.goBack();
     };
 
+    if (isLoading) {
+        return <Loader />;
+    }
     return (
         <View style={styles.container}>
             <View
@@ -80,21 +101,8 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     actionButtonWraper: {
-        marginVertical:20,           
+        marginVertical: 20,
         flexDirection: 'row',
         justifyContent: 'center',
     },
 });
-
-
-
-
-
-
-
-
-
-
-
-
-

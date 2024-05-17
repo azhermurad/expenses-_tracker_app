@@ -25,9 +25,11 @@ const ManageExpenseForm = ({ CancelExpenseHandler, id, onsubmit }) => {
     });
     useEffect(() => {
         if (!!id) {
-            const { amount, createdAt, title } = expenseCtx.expenses.filter(
+            let { amount, createdAt, title } = expenseCtx.expenses.filter(
                 (item) => item.id == id
             )[0];
+
+            createdAt = new Date(createdAt);
             setInputValue({
                 amount: {
                     value: '' + amount,
@@ -60,7 +62,7 @@ const ManageExpenseForm = ({ CancelExpenseHandler, id, onsubmit }) => {
         const data = {
             amount: +inputValue.amount.value,
             title: inputValue.title.value,
-            createdAt: new Date(inputValue.createdAt.value),
+            createdAt: new Date(inputValue.createdAt.value).toDateString(),
         };
 
         //  validation
@@ -69,7 +71,7 @@ const ManageExpenseForm = ({ CancelExpenseHandler, id, onsubmit }) => {
         // the title should not be empty
         const { amount, title, createdAt } = data;
         const amountValid = !isNaN(amount) && amount > 0;
-        const dateValid = createdAt.toDateString() !== 'Invalid Date';
+        const dateValid = createdAt !== 'Invalid Date';
         const titleValid = title.trim().length > 0;
         // const dateValid =
         if (!amountValid || !dateValid || !titleValid) {
@@ -96,7 +98,6 @@ const ManageExpenseForm = ({ CancelExpenseHandler, id, onsubmit }) => {
         onsubmit(data);
     };
 
-   
     return (
         <View>
             <View style={styles.formContainer}>

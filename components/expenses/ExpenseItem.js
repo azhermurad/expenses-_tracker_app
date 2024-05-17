@@ -32,7 +32,7 @@ const ExpenseItem = ({ item }) => {
                         {item.title}
                     </Text>
                     <Text style={styles.textColor}>
-                        {dateFormate(item.createdAt)}
+                        {dateFormate(new Date(item.createdAt))}
                     </Text>
                 </View>
                 <View>
